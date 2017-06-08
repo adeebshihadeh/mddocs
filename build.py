@@ -24,7 +24,7 @@ def getDirContents(dir, filefilter):
   return [files, dirs]
 
 def buildPage(base, file, dir):
-  return base.format(title = file.replace(".html", ""), link = file, homelink = relpath("/html/", dir + file), content = markup(open(file).read()), assetdir = relpath(assetdir, file))
+  return base.format(title = os.path.basename(file).replace(".html", ""), link = file, homelink = relpath(outdir, dir), content = markup(open(file).read()), assetdir = relpath(assetdir, dir))
 
 def buildHomePage(filelist, dir):
   cardshtml = ""
@@ -33,7 +33,7 @@ def buildHomePage(filelist, dir):
     cardshtml += cardbase.format(link=file, title=file.replace(".html", ""), image=relpath("./default.jpg", dir))
   for folder in filelist[1]:
     cardshtml += cardbase.format(link=folder, title=folder, image=relpath("./default.jpg", dir))
-  return homepagebase.format(cards = cardshtml, assetdir = relpath(assetdir, dir), homelink = relpath("/html/", dir))
+  return homepagebase.format(cards = cardshtml, assetdir = relpath(assetdir, dir), homelink = relpath(outdir, dir))
 
 def translateDir(dir):
   filelist = getDirContents(dir, ".md")
