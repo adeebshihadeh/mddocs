@@ -10,6 +10,7 @@ config = json.loads(str(open("config.json").read()))
 mddir = config["mddir"]
 outdir = config["outdir"]
 assetdir = config["assetdir"]
+defaultimg = config["defaultimg"]
 homepagebase = open(config["homebasehtml"]).read()
 mdhtmlbase = open(config["mdbasehtml"]).read()
 cardbase = open(config["cardbasehtml"]).read()
@@ -23,6 +24,9 @@ def getDirContents(dir, filefilter):
   files = [file for file in files if file.endswith(filefilter)]
   return [files, dirs]
 
+def getCardImg(name, dir):
+  return name + ".png" if os.path.isfile(dir + name + ".png") else relpath(defaultimg, dir)
+
 def buildPage(base, file, dir):
   return base.format(title = os.path.basename(file).replace(".html", ""), link = file, homelink = relpath(outdir, dir), content = markup(open(file).read()), assetdir = relpath(assetdir, dir))
 
@@ -30,9 +34,9 @@ def buildHomePage(filelist, dir):
   cardshtml = ""
   filelist[0].remove("index.html")
   for file in filelist[0]:
-    cardshtml += cardbase.format(link=file, title=file.replace(".html", ""), image=relpath("./default.jpg", dir))
+    cardshtml += cardbase.format(link = file, title = file.replace(".html", ""), image = getCardImg(file.replace(".html", ""), dir))
   for folder in filelist[1]:
-    cardshtml += cardbase.format(link=folder, title=folder, image=relpath("./default.jpg", dir))
+    cardshtml += cardbase.format(link = folder, title = folder, image = getCardImg(file.replace(".html", ""), dir))
   return homepagebase.format(cards = cardshtml, assetdir = relpath(assetdir, dir), homelink = relpath(outdir, dir))
 
 def translateDir(dir):
