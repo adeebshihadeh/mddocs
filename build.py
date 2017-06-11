@@ -34,9 +34,9 @@ def buildHomePage(filelist, dir):
   cardshtml = ""
   filelist[0].remove("index.html")
   for file in filelist[0]:
-    cardshtml += cardbase.format(link = file, title = file.replace(".html", ""), image = getCardImg(file.replace(".html", ""), dir))
+    cardshtml += cardbase.format(link = file, title = file.replace(".html", "").replace("-", " "), image = getCardImg(file.replace(".html", ""), dir))
   for folder in filelist[1]:
-    cardshtml += cardbase.format(link = folder, title = folder, image = getCardImg(folder.replace(".html", ""), dir))
+    cardshtml += cardbase.format(link = folder, title = folder.replace("-", " "), image = getCardImg(folder.replace(".html", ""), dir))
   return homepagebase.format(cards = cardshtml, assetdir = relpath(assetdir, dir), homelink = relpath(outdir, dir))
 
 def translateDir(dir):
