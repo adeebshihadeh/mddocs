@@ -20,11 +20,11 @@ markdown = mistune.Markdown()
 def markup(md):
   return markdown(md)
 
-def convertLinks(html, dir):
+def convertLinks(html):
   links = re.findall('<a href="?\'?([^"\'>]*)', html)
   for link in links:
     if link.endswith(".md"):
-      html.replace(link, link.replace(".md", ".html"))
+      html = html.replace(link, link.replace(".md", ".html"))
   return html
 
 def getDirContents(dir, filefilter):
@@ -36,7 +36,7 @@ def getCardImg(name, dir):
   return name + ".png" if os.path.isfile(dir + name + ".png") else relpath(defaultimg, dir)
 
 def buildPage(base, file, dir):
-  return base.format(title = os.path.basename(file).replace(".html", ""), link = file, homelink = relpath(outdir, dir), content = convertLinks(markup(open(file).read()), dir), assetdir = relpath(assetdir, dir))
+  return base.format(title = os.path.basename(file).replace(".html", ""), link = file, homelink = relpath(outdir, dir), content = convertLinks(markup(open(file).read())), assetdir = relpath(assetdir, dir))
 
 def buildHomePage(filelist, dir):
   cardshtml = ""
