@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 import mistune
+import re
 from distutils.dir_util import copy_tree
 from os.path import relpath
 
@@ -19,6 +20,13 @@ markdown = mistune.Markdown()
 def markup(md):
   return markdown(md)
 
+def convertLinks(html, dir):
+  links = re.findall('<a href="?\'?([^"\'>]*)', html)
+  for link in links:
+    if link.endswith(".md"):
+      html.replace(link, link.replace(".md", ".html"))
+  return html
+
 def getDirContents(dir, filefilter):
   root, dirs, files = next(os.walk(dir))
   files = [file for file in files if file.endswith(filefilter)]
@@ -28,7 +36,7 @@ def getCardImg(name, dir):
   return name + ".png" if os.path.isfile(dir + name + ".png") else relpath(defaultimg, dir)
 
 def buildPage(base, file, dir):
-  return base.format(title = os.path.basename(file).replace(".html", ""), link = file, homelink = relpath(outdir, dir), content = markup(open(file).read()), assetdir = relpath(assetdir, dir))
+  return base.format(title = os.path.basename(file).replace(".html", ""), link = file, homelink = relpath(outdir, dir), content = convertLinks(markup(open(file).read()), dir), assetdir = relpath(assetdir, dir))
 
 def buildHomePage(filelist, dir):
   cardshtml = ""
